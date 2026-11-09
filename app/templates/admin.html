@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The MunchBox | Admin Order Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .bg-brand-brown { background-color: #3b2011; }
+        .text-brand-amber { color: #f59e0b; }
+        .bg-brand-cream { background-color: #fdf8f0; }
+    </style>
+</head>
+<body class="bg-brand-cream text-gray-900 font-sans min-h-screen flex flex-col justify-between">
+    
+    <!-- Header with Official Logo -->
+    <header class="bg-brand-brown text-white shadow-md py-4 px-6 flex justify-between items-center border-b-4 border-amber-600">
+        <div class="flex items-center space-x-3">
+            <img src="/static/images/logo.png" alt="The MunchBox Logo" class="h-12 w-12 rounded-lg object-contain bg-white p-1 shadow" onerror="this.style.display='none'">
+            <h1 class="text-xl sm:text-2xl font-black text-brand-amber font-serif">Admin Dashboard - Orders Placed</h1>
+        </div>
+        <a href="/" class="bg-amber-500 text-brand-brown font-bold px-4 py-2 rounded-xl text-sm hover:bg-amber-400">🏠 Back to Store</a>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 flex-grow w-full">
+        <h2 class="text-2xl font-extrabold text-brand-brown mb-6">Customer Orders</h2>
+
+        <div class="bg-white rounded-2xl shadow border overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-brand-brown text-amber-100 text-xs uppercase">
+                        <th class="p-3">ID</th>
+                        <th class="p-3">Customer</th>
+                        <th class="p-3">Event / Occasion</th>
+                        <th class="p-3">Pickup</th>
+                        <th class="p-3">Total</th>
+                        <th class="p-3">Status</th>
+                        <th class="p-3">Deposit Proof</th>
+                        <th class="p-3">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm divide-y">
+                    {% for order in orders %}
+                    <tr class="hover:bg-amber-50">
+                        <td class="p-3 font-bold">#{{ order.id }}</td>
+                        <td class="p-3">{{ order.customer_name }}<br><span class="text-xs text-gray-500">{{ order.phone }}</span></td>
+                        <td class="p-3 font-semibold text-amber-700">{{ order.event_type }}</td>
+                        <td class="p-3 text-xs">{{ order.pickup_date }}<br>{{ order.pickup_time }}</td>
+                        <td class="p-3 font-bold">R {{ "%.2f"|format(order.total) }}</td>
+                        <td class="p-3"><span class="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full font-bold">{{ order.status }}</span></td>
+                        <td class="p-3">
+                            {% if order.deposit_proof_path %}
+                                <a href="{{ order.deposit_proof_path }}" target="_blank" class="text-blue-600 underline text-xs font-bold">View Proof</a>
+                            {% else %}
+                                <span class="text-gray-400 text-xs">Not Uploaded</span>
+                            {% endif %}
+                        </td>
+                        <td class="p-3">
+                            <button onclick="notifyClient({{ order.id }})" class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow hover:bg-green-700">Notify Client 📱</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer class="bg-brand-brown text-amber-100 text-center py-4 text-xs">
+        &copy; 2027 The MunchBox Administration Portal
+    </footer>
+
+    <script>
+        async function notifyClient(orderId) {
+            try {
+                const res = await fetch(`/api/admin/orders/${orderId}/notify`, { method: 'POST' });
+                const data = await res.json();
+                if (res.ok) {
+                    window.open(data.client_whatsapp_url, '_blank');
+                    location.reload();
+                } else {
+                    alert('Error notifying client.');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Network error.');
+            }
+        }
+    </script>
+</body>
+</html>

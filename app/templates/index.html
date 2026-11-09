@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The MunchBox | All Your Favourite Bites in One Box</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .bg-brand-brown { background-color: #3b2011; }
+        .text-brand-amber { color: #f59e0b; }
+        .bg-brand-amber { background-color: #f59e0b; }
+        .bg-brand-cream { background-color: #fdf8f0; }
+    </style>
+</head>
+<body class="bg-brand-cream text-gray-900 font-sans min-h-screen flex flex-col justify-between">
+    
+    <!-- Header with Official Logo -->
+    <header class="bg-brand-brown text-white shadow-md py-4 px-6 flex justify-between items-center border-b-4 border-amber-600">
+        <div class="flex items-center space-x-3">
+            <img src="/static/images/logo.png" alt="The MunchBox Logo" class="h-12 w-12 rounded-lg object-contain bg-white p-1 shadow" onerror="this.style.display='none'">
+            <div>
+                <h1 class="text-2xl font-black tracking-tight text-brand-amber font-serif">The MunchBox</h1>
+                <p class="text-xs text-amber-200 font-medium">By Aunty Bree's | 📞 068 016 2552 | 19 Eastwood Rd, Rosebank</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-3">
+            <a href="/specials" class="bg-amber-100 text-brand-brown font-bold px-4 py-2 rounded-xl text-sm hover:bg-amber-200">✨ Specials</a>
+            <a href="/admin" class="bg-amber-200 text-brand-brown font-bold px-4 py-2 rounded-xl text-sm hover:bg-amber-300">🛠️ Admin</a>
+            <button onclick="toggleCartModal()" class="bg-amber-500 text-brand-brown font-black px-4 py-2 rounded-xl shadow-lg flex items-center space-x-2 text-sm hover:bg-amber-400">
+                <span>🛒 Cart</span>
+                <span id="cart-counter" class="bg-brand-brown text-white text-xs px-2 py-0.5 rounded-full">0</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Catalog -->
+    <main class="max-w-6xl mx-auto px-4 py-8 flex-grow w-full">
+        <div class="mb-8 border-b-2 border-amber-200 pb-4">
+            <h2 class="text-3xl font-extrabold text-brand-brown">Savoury & Party Menu</h2>
+            <p class="text-gray-700 mt-1 font-medium">Order boxes directly, get instant PDF quotations, and send proof of deposit.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <!-- Solo Box -->
+            <div class="bg-white p-5 rounded-2xl shadow-md border-2 border-amber-200 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-xl font-black text-brand-brown">Solo Box</h3>
+                    <p class="text-xs font-semibold text-amber-700 mb-2">Perfect for 1 person</p>
+                    <p class="text-xs text-gray-600 mb-4">4× Samoosas, 4× Chilli Bites, 4× Mini Pastry Rolls. Served with a dip.</p>
+                </div>
+                <div class="flex justify-between items-center pt-3 border-t">
+                    <span class="text-xl font-black text-amber-700">R65.00</span>
+                    <button onclick="addToCart('Solo Box', 65.00)" class="bg-brand-brown text-white px-4 py-2 rounded-lg text-xs font-bold shadow hover:bg-amber-700">Add to Cart</button>
+                </div>
+            </div>
+
+            <!-- Classic Savoury Box -->
+            <div class="bg-white p-5 rounded-2xl shadow-md border-2 border-amber-200 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-xl font-black text-brand-brown">Classic Savoury Box</h3>
+                    <p class="text-xs font-semibold text-amber-700 mb-2">Feeds 1–2 people</p>
+                    <p class="text-xs text-gray-600 mb-4">6× Samoosas, 6× Chilli Bites, 6× Mini Pastry Rolls, 2× Chicken Kabaabs. Served with a dip.</p>
+                </div>
+                <div class="flex justify-between items-center pt-3 border-t">
+                    <span class="text-xl font-black text-amber-700">R120.00</span>
+                    <button onclick="addToCart('Classic Savoury Box', 120.00)" class="bg-brand-brown text-white px-4 py-2 rounded-lg text-xs font-bold shadow hover:bg-amber-700">Add to Cart</button>
+                </div>
+            </div>
+
+            <!-- Party Box -->
+            <div class="bg-white p-5 rounded-2xl shadow-md border-2 border-amber-200 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-xl font-black text-brand-brown">Party Box</h3>
+                    <p class="text-xs font-semibold text-amber-700 mb-2">Feeds ±15 people</p>
+                    <p class="text-xs text-gray-600 mb-4">Includes 100 items total (20 of each signature savory bite).</p>
+                </div>
+                <div class="flex justify-between items-center pt-3 border-t">
+                    <span class="text-xl font-black text-amber-700">R450.00</span>
+                    <button onclick="addToCart('Party Box (100 items)', 450.00)" class="bg-brand-brown text-white px-4 py-2 rounded-lg text-xs font-bold shadow hover:bg-amber-700">Add to Cart</button>
+                </div>
+            </div>
+
+            <!-- Mega Box -->
+            <div class="bg-white p-5 rounded-2xl shadow-md border-2 border-amber-200 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-xl font-black text-brand-brown">Mega Box</h3>
+                    <p class="text-xs font-semibold text-amber-700 mb-2">Feeds ±25 people</p>
+                    <p class="text-xs text-gray-600 mb-4">Includes 150 items total (30 of each signature savory bite).</p>
+                </div>
+                <div class="flex justify-between items-center pt-3 border-t">
+                    <span class="text-xl font-black text-amber-700">R650.00</span>
+                    <button onclick="addToCart('Mega Box (150 items)', 650.00)" class="bg-brand-brown text-white px-4 py-2 rounded-lg text-xs font-bold shadow hover:bg-amber-700">Add to Cart</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Floating WhatsApp Logo Button -->
+    <a href="https://wa.me/27680162552?text=Hi%20Aunty%20Bree,%20I%20would%20like%20to%20inquire%20about%20orders%20and%20banking%20details." target="_blank" class="fixed bottom-6 right-6 bg-green-500 text-white p-3 rounded-full shadow-2xl hover:bg-green-600 transition flex items-center justify-center z-40 border-2 border-white">
+        <img src="/static/images/whatsapp.logo.png" alt="WhatsApp Chat" class="h-10 w-10 object-contain rounded-full" onerror="this.style.display='none'">
+    </a>
+
+    <!-- Cart Modal with Checkout Form -->
+    <div id="cart-modal" class="fixed inset-0 bg-black bg-opacity-60 hidden justify-end z-50">
+        <div class="bg-white w-full max-w-md h-full p-6 flex flex-col justify-between shadow-2xl overflow-y-auto">
+            <div>
+                <div class="flex justify-between items-center border-b pb-4 border-amber-200">
+                    <h3 class="text-xl font-black text-brand-brown">Your Order Cart</h3>
+                    <button onclick="toggleCartModal()" class="text-gray-500 font-bold text-xl">&times;</button>
+                </div>
+                <div id="cart-items-container" class="py-4 space-y-3">
+                    <p class="text-gray-500 text-sm">Your cart is empty.</p>
+                </div>
+            </div>
+
+            <div class="border-t pt-4 space-y-3 border-amber-200">
+                <div class="flex justify-between text-lg font-black text-brand-brown">
+                    <span>Total:</span>
+                    <span id="cart-total">R0.00</span>
+                </div>
+                <div class="space-y-2">
+                    <input type="text" id="customer-name" placeholder="Full Name" class="w-full border p-2.5 rounded-lg text-sm">
+                    <input type="text" id="customer-phone" placeholder="Phone Number (WhatsApp)" class="w-full border p-2.5 rounded-lg text-sm">
+                    <input type="text" id="delivery-area" placeholder="Delivery Area (e.g. Rosebank)" class="w-full border p-2.5 rounded-lg text-sm">
+                    <textarea id="street-address" placeholder="Street Address" class="w-full border p-2.5 rounded-lg text-sm"></textarea>
+                    
+                    <select id="event-type" class="w-full border p-2.5 rounded-lg text-sm bg-white">
+                        <option value="Birthday Party">Birthday Party</option>
+                        <option value="Wedding Gathering">Wedding Gathering</option>
+                        <option value="Festive / Christmas Celebration">Festive / Christmas Celebration</option>
+                        <option value="Corporate Function">Corporate Function</option>
+                        <option value="Standard Casual Order">Standard Casual Order</option>
+                    </select>
+
+                    <div class="flex space-x-2">
+                        <input type="date" id="pickup-date" class="w-1/2 border p-2 rounded-lg text-sm">
+                        <input type="time" id="pickup-time" class="w-1/2 border p-2 rounded-lg text-sm">
+                    </div>
+                </div>
+
+                <button onclick="submitOrder()" class="bg-green-600 text-white w-full py-3 rounded-xl font-bold hover:bg-green-700 transition shadow flex items-center justify-center space-x-2">
+                    <span>Generate Quotation & Checkout via WhatsApp</span>
+                    <span>📱</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deposit Upload Modal -->
+    <div id="deposit-modal" class="fixed inset-0 bg-black bg-opacity-60 hidden justify-center items-center z-50 p-4">
+        <div class="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl border-2 border-amber-500">
+            <h3 class="text-xl font-black text-brand-brown mb-2">Secure Your Order</h3>
+            <p class="text-xs text-gray-600 mb-4">Please transfer your deposit to <b>Capitec Acc: 160 351 9228 (Doone B Johns)</b> and upload your proof of payment below:</p>
+            
+            <div class="mb-4">
+                <a id="download-pdf-btn" href="#" target="_blank" class="block text-center bg-amber-500 text-brand-brown font-bold py-2.5 rounded-xl shadow mb-3 hover:bg-amber-400">📄 Download Official Quotation PDF</a>
+                <input type="file" id="deposit-file" class="w-full border p-2 rounded text-sm">
+            </div>
+
+            <div class="flex space-x-2">
+                <button onclick="uploadDeposit()" class="bg-brand-brown text-white w-full py-2.5 rounded-xl font-bold text-sm">Upload Proof of Payment</button>
+                <button onclick="finishCheckout()" class="bg-gray-300 text-gray-800 px-4 py-2.5 rounded-xl font-bold text-sm">Skip / Finish</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-brand-brown text-amber-100 text-center py-6 text-sm flex justify-between px-6 items-center border-t-4 border-amber-600">
+        <span>&copy; 2027 The MunchBox. All rights reserved.</span>
+        <span>Pickup Address: 19 Eastwood Road, Rosebank</span>
+    </footer>
+
+    <script>
+        let cart = [];
+        let currentOrderId = null;
+        let pendingWhatsappUrl = "";
+
+        function addToCart(name, price) {
+            const existing = cart.find(item => item.name === name);
+            if (existing) { existing.qty += 1; } 
+            else { cart.push({ name, price, qty: 1, product_id: 1 }); }
+            updateCartUI();
+            alert(name + " added to cart!");
+        }
+
+        function toggleCartModal() {
+            const modal = document.getElementById('cart-modal');
+            modal.classList.toggle('hidden');
+            modal.classList.toggle('flex');
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items-container');
+            const counter = document.getElementById('cart-counter');
+            const totalEl = document.getElementById('cart-total');
+
+            counter.innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+            if (cart.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-sm">Your cart is empty.</p>';
+                totalEl.innerText = 'R0.00';
+                return;
+            }
+
+            container.innerHTML = '';
+            let total = 0;
+            cart.forEach((item, index) => {
+                total += item.price * item.qty;
+                container.innerHTML += `
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <div>
+                            <p class="font-bold text-sm text-brand-brown">${item.name}</p>
+                            <p class="text-xs text-gray-500">R${item.price.toFixed(2)} x ${item.qty}</p>
+                        </div>
+                        <button onclick="removeItem(${index})" class="text-red-500 text-xs font-bold">Remove</button>
+                    </div>`;
+            });
+            totalEl.innerText = 'R' + total.toFixed(2);
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        async function submitOrder() {
+            if (cart.length === 0) { alert('Your cart is empty!'); return; }
+
+            const fullName = document.getElementById('customer-name').value;
+            const phone = document.getElementById('customer-phone').value;
+            const area = document.getElementById('delivery-area').value;
+            const address = document.getElementById('street-address').value;
+            const eventType = document.getElementById('event-type').value;
+            const pickupDate = document.getElementById('pickup-date').value;
+            const pickupTime = document.getElementById('pickup-time').value;
+
+            if (!fullName || !phone || !address || !pickupDate) {
+                alert('Please fill in all contact and pickup schedule details.');
+                return;
+            }
+
+            const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const payload = {
+                full_name: fullName,
+                phone_number: phone,
+                delivery_area: area,
+                street_address: address,
+                event_type: eventType,
+                pickup_date: pickupDate,
+                pickup_time: pickupTime,
+                items: cart,
+                total_amount: totalAmount
+            };
+
+            try {
+                const response = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    currentOrderId = data.order_id;
+                    pendingWhatsappUrl = data.whatsapp_url;
+                    document.getElementById('download-pdf-btn').href = data.pdf_url;
+                    
+                    toggleCartModal();
+                    document.getElementById('deposit-modal').classList.remove('hidden');
+                    document.getElementById('deposit-modal').classList.add('flex');
+                } else {
+                    alert('Error placing order.');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Network error.');
+            }
+        }
+
+        async function uploadDeposit() {
+            const fileInput = document.getElementById('deposit-file');
+            if (fileInput.files.length === 0) { alert('Please select a file.'); return; }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                const res = await fetch(`/api/orders/${currentOrderId}/deposit`, {
+                    method: 'POST',
+                    body: formData
+                });
+                if (res.ok) {
+                    alert('Deposit proof uploaded successfully!');
+                    finishCheckout();
+                } else {
+                    alert('Upload failed.');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function finishCheckout() {
+            document.getElementById('deposit-modal').classList.add('hidden');
+            document.getElementById('deposit-modal').classList.remove('flex');
+            window.location.href = pendingWhatsappUrl;
+        }
+    </script>
+</body>
+</html>
