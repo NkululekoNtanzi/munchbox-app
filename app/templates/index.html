@@ -37,7 +37,7 @@
     <main class="max-w-6xl mx-auto px-4 py-8 flex-grow w-full">
         <div class="mb-8 border-b-2 border-amber-200 pb-4">
             <h2 class="text-3xl font-extrabold text-brand-brown">Savoury & Party Menu</h2>
-            <p class="text-gray-700 mt-1 font-medium">Order boxes directly, get instant PDF quotations, and send proof of deposit.</p>
+            <p class="text-gray-700 mt-1 font-medium">Order boxes directly, get instant quotation summary, and send proof of deposit.</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -153,27 +153,9 @@
                 </div>
 
                 <button onclick="submitOrder()" class="bg-green-600 text-white w-full py-3 rounded-xl font-bold hover:bg-green-700 transition shadow flex items-center justify-center space-x-2">
-                    <span>Generate Quotation & Checkout via WhatsApp</span>
+                    <span>Send Order via WhatsApp</span>
                     <span>📱</span>
                 </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Deposit Upload Modal -->
-    <div id="deposit-modal" class="fixed inset-0 bg-black bg-opacity-60 hidden justify-center items-center z-50 p-4">
-        <div class="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl border-2 border-amber-500">
-            <h3 class="text-xl font-black text-brand-brown mb-2">Secure Your Order</h3>
-            <p class="text-xs text-gray-600 mb-4">Please transfer your deposit to <b>Capitec Acc: 160 351 9228 (Doone B Johns)</b> and upload your proof of payment below:</p>
-            
-            <div class="mb-4">
-                <a id="download-pdf-btn" href="#" target="_blank" class="block text-center bg-amber-500 text-brand-brown font-bold py-2.5 rounded-xl shadow mb-3 hover:bg-amber-400">📄 Download Official Quotation PDF</a>
-                <input type="file" id="deposit-file" class="w-full border p-2 rounded text-sm">
-            </div>
-
-            <div class="flex space-x-2">
-                <button onclick="uploadDeposit()" class="bg-brand-brown text-white w-full py-2.5 rounded-xl font-bold text-sm">Upload Proof of Payment</button>
-                <button onclick="finishCheckout()" class="bg-gray-300 text-gray-800 px-4 py-2.5 rounded-xl font-bold text-sm">Skip / Finish</button>
             </div>
         </div>
     </div>
@@ -185,13 +167,11 @@
 
     <script>
         let cart = [];
-        let currentOrderId = null;
-        let pendingWhatsappUrl = "";
 
         function addToCart(name, price) {
             const existing = cart.find(item => item.name === name);
             if (existing) { existing.qty += 1; } 
-            else { cart.push({ name, price, qty: 1, product_id: 1 }); }
+            else { cart.push({ name, price, qty: 1 }); }
             updateCartUI();
             alert(name + " added to cart!");
         }
@@ -235,86 +215,48 @@
             updateCartUI();
         }
 
-        async function submitOrder() {
-            if (cart.length === 0) { alert('Your cart is empty!'); return; }
+        function submitOrder() {
+            if (cart.length === 0) { 
+                alert('Your cart is empty!'); 
+                return; 
+            }
 
-            const fullName = document.getElementById('customer-name').value;
-            const phone = document.getElementById('customer-phone').value;
-            const area = document.getElementById('delivery-area').value;
-            const address = document.getElementById('street-address').value;
+            const fullName = document.getElementById('customer-name').value.trim();
+            const phone = document.getElementById('customer-phone').value.trim();
+            const area = document.getElementById('delivery-area').value.trim();
+            const address = document.getElementById('street-address').value.trim();
             const eventType = document.getElementById('event-type').value;
             const pickupDate = document.getElementById('pickup-date').value;
             const pickupTime = document.getElementById('pickup-time').value;
 
             if (!fullName || !phone || !address || !pickupDate) {
-                alert('Please fill in all contact and pickup schedule details.');
+                alert('Please fill in all contact name, phone, address, and pickup date details.');
                 return;
             }
 
             const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-            const payload = {
-                full_name: fullName,
-                phone_number: phone,
-                delivery_area: area,
-                street_address: address,
-                event_type: eventType,
-                pickup_date: pickupDate,
-                pickup_time: pickupTime,
-                items: cart,
-                total_amount: totalAmount
-            };
+            const itemsSummary = cart.map(item => `• ${item.qty}x ${item.name} (R${(item.price * item.qty).toFixed(2)})`).join('\n');
 
-            try {
-                const response = await fetch('/api/orders', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const data = await response.json();
-                if (response.ok) {
-                    currentOrderId = data.order_id;
-                    pendingWhatsappUrl = data.whatsapp_url;
-                    document.getElementById('download-pdf-btn').href = data.pdf_url;
-                    
-                    toggleCartModal();
-                    document.getElementById('deposit-modal').classList.remove('hidden');
-                    document.getElementById('deposit-modal').classList.add('flex');
-                } else {
-                    alert('Error placing order.');
-                }
-            } catch (err) {
-                console.error(err);
-                alert('Network error.');
-            }
-        }
+            const whatsappMessage = 
+                `🍔 *NEW ORDER - THE MUNCHBOX* 📦\n\n` +
+                `🎉 *Event / Occasion:* ${eventType}\n` +
+                `👤 *Customer Name:* ${fullName}\n` +
+                `📞 *Phone Number:* ${phone}\n` +
+                `📍 *Delivery Area:* ${area}\n` +
+                `🏠 *Street Address:* ${address}\n` +
+                `📅 *Pickup Schedule:* ${pickupDate} at ${pickupTime || 'Standard Time'}\n\n` +
+                `*Order Items:*\n${itemsSummary}\n\n` +
+                `💰 *Total Amount:* R${totalAmount.toFixed(2)}\n\n` +
+                `🏦 *Capitec Banking Details for Deposit:*\n` +
+                `• Holder: Doone B Johns\n` +
+                `• Account: 160 351 9228\n\n` +
+                `Please confirm my order and send payment instructions!`;
 
-        async function uploadDeposit() {
-            const fileInput = document.getElementById('deposit-file');
-            if (fileInput.files.length === 0) { alert('Please select a file.'); return; }
+            const encodedMessage = encodeURIComponent(whatsappMessage);
+            const whatsappUrl = `https://wa.me/27680162552?text=${encodedMessage}`;
 
-            const formData = new FormData();
-            formData.append('file', fileInput.files[0]);
-
-            try {
-                const res = await fetch(`/api/orders/${currentOrderId}/deposit`, {
-                    method: 'POST',
-                    body: formData
-                });
-                if (res.ok) {
-                    alert('Deposit proof uploaded successfully!');
-                    finishCheckout();
-                } else {
-                    alert('Upload failed.');
-                }
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
-        function finishCheckout() {
-            document.getElementById('deposit-modal').classList.add('hidden');
-            document.getElementById('deposit-modal').classList.remove('flex');
-            window.location.href = pendingWhatsappUrl;
+            toggleCartModal();
+            window.open(whatsappUrl, '_blank');
         }
     </script>
 </body>
